@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprehensive Game Theory Quiz</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #4e54c8;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+        .quiz-info {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 5px solid #4e54c8;
+        }
+        .question {
+            margin-bottom: 30px;
+            padding: 25px;
+            border: 1px solid #e1e8ed;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .question:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .question-title {
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+        }
+        .options {
+            margin-bottom: 15px;
+        }
+        .option {
+            margin-bottom: 12px;
+            padding: 12px 15px;
+            border: 1px solid #e1e8ed;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .option:hover {
+            background-color: #f0f7ff;
+            border-color: #cce0ff;
+        }
+        .option.selected {
+            background-color: #e1f5fe;
+            border-color: #4fc3f7;
+        }
+        .explanation {
+            display: none;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #4e54c8;
+        }
+        .explanation.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .explanation-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+        .submit-btn {
+            background: linear-gradient(to right, #4e54c8, #8f94fb);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            display: block;
+            margin: 40px auto;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(0, 0, 0, 0.3);
+        }
+        .results {
+            display: none;
+            text-align: center;
+            padding: 30px;
+            margin-top: 30px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .results.show {
+            display: block;
+            animation: fadeIn 0.8s;
+        }
+        .score {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .feedback {
+            font-size: 18px;
+            margin-bottom: 25px;
+            line-height: 1.5;
+        }
+        .restart-btn {
+            background: linear-gradient(to right, #11998e, #38ef7d);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+        }
+        .correct {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .incorrect {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .difficulty {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+        .difficulty.easy {
+            background-color: #2ecc71;
+            color: white;
+        }
+        .difficulty.medium {
+            background-color: #f39c12;
+            color: white;
+        }
+        .difficulty.hard {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .progress-bar {
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .progress {
+            height: 100%;
+            background: linear-gradient(to right, #4e54c8, #8f94fb);
+            width: 0%;
+            transition: width 0.5s;
+        }
+        .question-counter {
+            text-align: right;
+            margin-bottom: 10px;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Comprehensive Game Theory Quiz</h1>
+            <p class="subtitle">Test your understanding of game theory concepts from basic to advanced</p>
+        </div>
+        
+        <div class="quiz-info">
+            <p>This quiz contains 20 questions of varying difficulty levels. Questions are marked with difficulty indicators:</p>
+            <p>
+                <span class="difficulty easy">Easy</span> - Basic concepts and definitions
+                <span class="difficulty medium">Medium</span> - Application and analysis
+                <span class="difficulty hard">Hard</span> - Advanced concepts and critical thinking
+            </p>
+            <p>Select the best answer for each question, then click "Submit Quiz" to see your results and detailed explanations.</p>
+        </div>
+        
+        <div class="question-counter">Questions: <span id="current">0</span>/20</div>
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        
+        <form id="quiz-form">
+            <!-- Question 1 -->
+            <div class="question">
+                <div class="question-title">1. What is the formal definition of Game Theory?<span class="difficulty easy">Easy</span></div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q1" value="a"> 
+                        A) The study of board games and their strategies
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q1" value="b"> 
+                        B) The mathematical study of strategic interaction between rational decision-makers
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q1" value="c"> 
+                        C) The analysis of economic markets only
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q1" value="d"> 
+                        D) The psychology of competitive behavior
+                    </div>
+                </div>
+                <div class="explanation" id="explanation-q1">
+                    <div class="explanation-title">Explanation:</div>
+                    <p><span class="correct">Correct Answer: B</span></p>
+                    <p>Game theory is formally defined as the mathematical study of strategic interaction between rational decision-makers (agents). While it applies to many domains including economics, its core focus is on strategic interactions where outcomes depend on the choices of multiple agents.</p>
+                </div>
+            </div>
+            
+            <!-- Question 2 -->
+            <div class="question">
+                <div class="question-title">2. In the TCP Congestion Control Prisoner's Dilemma, what is the Nash Equilibrium?<span class="difficulty easy">Easy</span></div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q2" value="a"> 
+                        A) (C, C) - Both use Correct TCP
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q2" value="b"> 
+                        B) (C, D) - Mixed strategies
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q2" value="c"> 
+                        C) (D, C) - Mixed strategies
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q2" value="d"> 
+                        D) (D, D) - Both use Defective TCP
+                    </div>
+                </div>
+                <div class="explanation" id="explanation-q2">
+                    <div class="explanation-title">Explanation:</div>
+                    <p><span class="correct">Correct Answer: D</span></p>
+                    <p>The Nash Equilibrium occurs at (D, D) where both players choose the defective TCP implementation. At this point, neither player can improve their outcome by unilaterally changing their strategy, even though both would be better off at (C, C).</p>
+                </div>
+            </div>
+            
+            <!-- Question 3 -->
+            <div class="question">
+                <div class="question-title">3. Which of the following is NOT an essential ingredient of a mathematical game?<span class="difficulty easy">Easy</span></div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q3" value="a"> 
+                        A) Rules
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q3" value="b"> 
+                        B) Outcomes and Payoffs
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q3" value="c"> 
+                        C) Uncertainty of the Outcome
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q3" value="d"> 
+                        D) Cheating
+                    </div>
+                </div>
+                <div class="explanation" id="explanation-q3">
+                    <div class="explanation-title">Explanation:</div>
+                    <p><span class="correct">Correct Answer: D</span></p>
+                    <p>Game theory does not model cheating — strategies are within the allowed moves. All players follow the rules in mathematical game models.</p>
+                </div>
+            </div>
+            
+            <!-- Question 4 -->
+            <div class="question">
+                <div class="question-title">4. In game theory, what is the key difference between a "move" and a "strategy"?<span class="difficulty medium">Medium</span></div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q4" value="a"> 
+                        A) A move is a complete plan, while a strategy is a single action
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q4" value="b"> 
+                        B) A strategy is a complete plan covering all possible positions, while a move is a single action
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q4" value="c"> 
+                        C) They are essentially the same concept
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q4" value="d"> 
+                        D) A move applies to simultaneous games, while a strategy applies to sequential games
+                    </div>
+                </div>
+                <div class="explanation" id="explanation-q4">
+                    <div class="explanation-title">Explanation:</div>
+                    <p><span class="correct">Correct Answer: B</span></p>
+                    <p>A strategy is a complete plan specifying what move to make in every possible position in the game, while a move is the choice a player makes in a given position.</p>
+                </div>
+            </div>
+            
+            <!-- Question 5 -->
+            <div class="question">
+                <div class="question-title">5. Which game classification describes a situation where one player's gain equals another's loss?<span class="difficulty easy">Easy</span></div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q5" value="a"> 
+                        A) Cooperative game
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q5" value="b"> 
+                        B) Zero-sum game
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q5" value="c"> 
+                        C) Sequential game
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q5" value="d"> 
+                        D) Perfect information game
+                    </div>
+                </div>
+                <div class="explanation" id="explanation-q5">
+                    <div class="explanation-title">Explanation:</div>
+                    <p><span class="correct">Correct Answer: B</span></p>
+                    <p>Zero-sum games are those where one player's gain equals another's loss (e.g., Poker, Chess). Real-world games are rarely pure zero-sum.</p>
+                </div>
+            </div>
+            
+            <!-- Question 6 -->
+            <div class="question">
+                <div class="question-title">6. Why is (C, C) not a Nash Equilibrium in the Prisoner's Dilemma?<span class="difficulty medium">Medium</span></div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q6" value="a"> 
+                        A) Both players get equal delays
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q6" value="b"> 
+                        B) Both players have an incentive to switch to D
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q6" value="c"> 
+                        C) The network becomes unstable
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q6" value="d"> 
+                        D) It requires communication between players
+                    </div>
+                </div>
+                <div class="explanation" id="explanation-q6">
+                    <div class="explanation-title">Explanation:</div>
+                    <p><span class="correct">Correct Answer: B</span></p>
+                    <p>(C, C) is not a Nash Equilibrium because each player has an incentive to unilaterally deviate to strategy D. If one player switches to D while the other remains at C, the switching player improves their outcome (from 1ms to 0ms delay).</p>
+                </div>
+            </div>
+            
+            <!-- Question 7 -->
+            <div class="question">
+                <div class="question-title">7. What is the key assumption about players in game theory?<span class="difficulty easy">Easy</span></div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q7" value="a"> 
+                        A) Players are always cooperative
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q7" value="b"> 
+                        B) Players are irrational
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q7" value="c"> 
+                        C) Players are rational and try to maximize their own payoff
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q7" value="d"> 
+                        D) Players don't care about outcomes
+                    </div>
+                </div>
+                <div class="explanation" id="explanation-q7">
+                    <div class="explanation-title">Explanation:</div>
+                    <p><span class="correct">Correct Answer: C</span></p>
+                    <p>The rational behavior assumption states that players are rational: they have preferences, beliefs about other players, and try to maximize their own payoff. They also know that other players are rational and trying to maximize their payoff.</p>
+                </div>
+            </div>
+            
+            <!-- Question 8 -->
+            <div class="question">
+                <div class="question-title">8. In which type of game does a player know all prior moves when making a decision?<span class="difficulty medium">Medium</span></div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q8" value="a"> 
+                        A) Simultaneous game
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q8" value="b"> 
+                        B) Perfect information game
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q8" value="c"> 
+                        C) Zero-sum game
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q8" value="d"> 
+                        D) Cooperative game
+                    </div>
+                </div>
+                <div class="explanation" id="explanation-q8">
+                    <div class="explanation-title">Explanation:</div>
+                    <p><span class="correct">Correct Answer: B</span></p>
+                    <p>In perfect information games (typically sequential games), a player knows all prior moves when deciding. Chess is a classic example of a perfect information game.</p>
+                </div>
+            </div>
+            
+            <!-- Question 9 -->
+            <div class="question">
+                <div class="question-title">9. What is the fundamental reason why the Prisoner's Dilemma presents a social dilemma?<span class="difficulty medium">Medium</span></div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q9" value="a"> 
+                        A) Players cannot communicate with each other
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q9" value="b"> 
+                        B) The Nash Equilibrium is Pareto inefficient
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q9" value="c"> 
+                        C) Players have dominant strategies
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q9" value="d"> 
+                        D) The game is zero-sum
+                    </div>
+                </div>
+                <div class="explanation" id="explanation-q9">
+                    <div class="explanation-title">Explanation:</div>
+                    <p><span class="correct">Correct Answer: B</span></p>
+                    <p>The social dilemma in the Prisoner's Dilemma arises because individual rationality leads to an outcome (Nash Equilibrium) that is worse for all players compared to another feasible outcome (mutual cooperation). This tension between individual and collective rationality is the essence of the dilemma.</p>
+                </div>
+            </div>
+            
+            <!-- Question 10 -->
+            <div class="question">
+                <div class="question-title">10. What distinguishes a mixed strategy from a pure strategy in game theory?<span class="difficulty medium">Medium</span></div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q10" value="a"> 
+                        A) A pure strategy is deterministic, while a mixed strategy involves randomization
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q10" value="b"> 
+                        B) A mixed strategy applies only to simultaneous games
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q10" value="c"> 
+                        C) A pure strategy is always dominant
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q10" value="d"> 
+                        D) Mixed strategies are only relevant in zero-sum games
+                    </div>
+                </div>
+                <div class="explanation" id="explanation-q10">
+                    <div class="explanation-title">Explanation:</div>
+                    <p><span class="correct">Correct Answer: A</span></p>
+                    <p>A pure strategy is a deterministic plan that specifies one particular action in each situation. A mixed strategy is a probability distribution over pure strategies, introducing intentional randomization.</p>
+                </div>
+            </div>
+            
+            <!-- Question 11 -->
+            <div class="question">
+                <div class="question-title">11. In the TCP Congestion Control game, what would happen to the Nash Equilibrium if the delay for (D,D) was reduced from 3ms to 1.5ms?<span class="difficulty hard">Hard</span></div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q11" value="a"> 
+                        A) (C,C) would become the Nash Equilibrium
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q11" value="b"> 
+                        B) (D,D) would remain the Nash Equilibrium but would be Pareto efficient
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q11" value="c"> 
+                        C) (D,D) would remain the Nash Equilibrium but the social dilemma would be reduced
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q11" value="d"> 
+                        D) Both (C,C) and (D,D) would be Nash Equilibria
+                    </div>
+                </div>
+                <div class="explanation" id="explanation-q11">
+                    <div class="explanation-title">Explanation:</div>
+                    <p><span class="correct">Correct Answer: C</span></p>
+                    <p>Reducing the delay for (D,D) from 3ms to 1.5ms would still preserve D as the dominant strategy (since 0ms < 1ms and 1.5ms < 4ms), so (D,D) remains the Nash Equilibrium. However, the difference between the cooperative outcome (1ms) and the equilibrium outcome (1.5ms) is smaller, reducing the severity of the social dilemma.</p>
+                </div>
+            </div>
+            
+            <!-- Question 12 -->
+            <div class="question">
+                <div class="question-title">12. Which of the following conditions would transform the Prisoner's Dilemma into a different game where cooperation becomes sustainable?<span class="difficulty hard">Hard</span></div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q12" value="a"> 
+                        A) Making the game sequential rather than simultaneous
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q12" value="b"> 
+                        B) Introducing repeated interactions with a sufficiently high discount factor
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q12" value="c"> 
+                        C) Adding communication between players before the game
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q12" value="d"> 
+                        D) All of the above
+                    </div>
+                </div>
+                <div class="explanation" id="explanation-q12">
+                    <div class="explanation-title">Explanation:</div>
+                    <p><span class="correct">Correct Answer: B</span></p>
+                    <p>Only repeated interactions with a sufficiently high discount factor can fundamentally change the strategic structure to make cooperation sustainable in equilibrium. In repeated games, players can use trigger strategies to punish defection, making cooperation rational.</p>
+                </div>
+            </div>
+            
+            <!-- Question 13 -->
+            <div class="question">
+                <div class="question-title">13. What is the key difference between complete information and perfect information in game theory?<span class="difficulty medium">Medium</span></div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q13" value="a"> 
+                        A) Complete information refers to knowing all players' payoffs, while perfect information refers to knowing all previous moves
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q13" value="b"> 
+                        B) They are identical concepts
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q13" value="c"> 
+                        C) Complete information applies to sequential games, perfect information to simultaneous games
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q13" value="d"> 
+                        D) Perfect information requires common knowledge of rationality
+                    </div>
+                </div>
+                <div class="explanation" id="explanation-q13">
+                    <div class="explanation-title">Explanation:</div>
+                    <p><span class="correct">Correct Answer: A</span></p>
+                    <p>Complete information means all players know the game structure, including all possible moves and all players' payoff functions. Perfect information means that at each point in the game, players know the entire history of moves made so far.</p>
+                </div>
+            </div>
+            
+            <!-- Question 14 -->
+            <div class="question">
+                <div class="question-title">14. Which of the following is NOT a necessary condition for a Nash Equilibrium?<span class="difficulty hard">Hard</span></div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q14" value="a"> 
+                        A) No player can benefit by unilaterally changing their strategy
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q14" value="b"> 
+                        B) Players have common knowledge of rationality
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q14" value="c"> 
+                        C) The outcome is Pareto efficient
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q14" value="d"> 
+                        D) Players are rational utility maximizers
+                    </div>
+                </div>
+                <div class="explanation" id="explanation-q14">
+                    <div class="explanation-title">Explanation:</div>
+                    <p><span class="correct">Correct Answer: C</span></p>
+                    <p>Pareto efficiency is NOT a necessary condition for Nash Equilibrium. The Prisoner's Dilemma clearly demonstrates this - (D,D) is a Nash Equilibrium but is Pareto inferior to (C,C). Nash Equilibrium only requires that no player can unilaterally improve their payoff.</p>
+                </div>
+            </div>
+            
+            <!-- Question 15 -->
+            <div class="question">
+                <div class="question-title">15. In the context of the TCP Congestion Control game, what mechanism could a network operator implement to make (C,C) a Nash Equilibrium?<span class="difficulty hard">Hard</span></div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q15" value="a"> 
+                        A) Implement a protocol that detects defective TCP and imposes additional 3ms delay on defectors
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q15" value="b"> 
+                        B) Increase the bandwidth of the network
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q15" value="c"> 
+                        C) Allow users to communicate before making decisions
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q15" value="d"> 
+                        D) Randomly assign TCP implementations to users
+                    </div>
+                </div>
+                <div class="explanation" id="explanation-q15">
+                    <div class="explanation-title">Explanation:</div>
+                    <p><span class="correct">Correct Answer: A</span></p>
+                    <p>To make (C,C) a Nash Equilibrium, the network operator must change the payoff structure so that defection is no longer beneficial. If defectors receive an additional 3ms penalty, then the payoff for defecting when the other cooperates would become worse than mutual cooperation.</p>
+                </div>
+            </div>
+            
+            <!-- Question 16 -->
+            <div class="question">
+                <div class="question-title">16. What is the fundamental difference between cooperative and non-cooperative game theory?<span class="difficulty medium">Medium</span></div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q16" value="a"> 
+                        A) Cooperative game theory assumes players can make binding agreements, while non-cooperative game theory does not
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q16" value="b"> 
+                        B) Cooperative game theory studies zero-sum games, while non-cooperative studies non-zero-sum games
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q16" value="c"> 
+                        C) Non-cooperative game theory assumes perfect information
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q16" value="d"> 
+                        D) Cooperative game theory only applies to economic markets
+                    </div>
+                </div>
+                <div class="explanation" id="explanation-q16">
+                    <div class="explanation-title">Explanation:</div>
+                    <p><span class="correct">Correct Answer: A</span></p>
+                    <p>The key distinction is that cooperative game theory allows for binding agreements that players cannot unilaterally deviate from, while non-cooperative game theory assumes all agreements are non-binding ("cheap talk").</p>
+                </div>
+            </div>
+            
+            <!-- Question 17 -->
+            <div class="question">
+                <div class="question-title">17. In a Bayesian game, what represents a player's private information?<span class="difficulty hard">Hard</span></div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q17" value="a"> 
+                        A) Their type
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q17" value="b"> 
+                        B) Their strategy
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q17" value="c"> 
+                        C) Their payoff function
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q17" value="d"> 
+                        D) Both A and C
+                    </div>
+                </div>
+                <div class="explanation" id="explanation-q17">
+                    <div class="explanation-title">Explanation:</div>
+                    <p><span class="correct">Correct Answer: D</span></p>
+                    <p>In Bayesian games (games of incomplete information), a player's "type" encapsulates their private information, which can include their payoff function, their capabilities, or their preferences.</p>
+                </div>
+            </div>
+            
+            <!-- Question 18 -->
+            <div class="question">
+                <div class="question-title">18. Which solution concept requires that players' strategies form a Nash Equilibrium in every subgame of the original game?<span class="difficulty hard">Hard</span></div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q18" value="a"> 
+                        A) Dominant strategy equilibrium
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q18" value="b"> 
+                        B) Subgame perfect equilibrium
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q18" value="c"> 
+                        C) Bayesian Nash equilibrium
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q18" value="d"> 
+                        D) Correlated equilibrium
+                    </div>
+                </div>
+                <div class="explanation" id="explanation-q18">
+                    <div class="explanation-title">Explanation:</div>
+                    <p><span class="correct">Correct Answer: B</span></p>
+                    <p>Subgame perfect equilibrium is a refinement of Nash Equilibrium that applies to extensive-form games (sequential games). It requires that players' strategies constitute a Nash Equilibrium not only in the whole game but in every subgame.</p>
+                </div>
+            </div>
+            
+            <!-- Question 19 -->
+            <div class="question">
+                <div class="question-title">19. What is the key assumption of "common knowledge of rationality" in game theory?<span class="difficulty medium">Medium</span></div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q19" value="a"> 
+                        A) All players are rational
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q19" value="b"> 
+                        B) All players are rational, and all players know that all players are rational
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q19" value="c"> 
+                        C) All players are rational, all players know that all players are rational, all players know that all players know that all players are rational, and so on ad infinitum
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q19" value="d"> 
+                        D) Rationality is objectively defined and measurable
+                    </div>
+                </div>
+                <div class="explanation" id="explanation-q19">
+                    <div class="explanation-title">Explanation:</div>
+                    <p><span class="correct">Correct Answer: C</span></p>
+                    <p>Common knowledge of rationality requires an infinite hierarchy of beliefs: (1) all players are rational, (2) all players know (1), (3) all players know (2), (4) all players know (3), and so on.</p>
+                </div>
+            </div>
+            
+            <!-- Question 20 -->
+            <div class="question">
+                <div class="question-title">20. In the TCP Congestion Control game, what would happen if the payoff for (D,C) was changed to (2ms, 2ms)?<span class="difficulty hard">Hard</span></div>
+                <div class="options">
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q20" value="a"> 
+                        A) The game would become a coordination game
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q20" value="b"> 
+                        B) D would no longer be a dominant strategy
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q20" value="c"> 
+                        C) Both (C,C) and (D,D) would be Nash Equilibria
+                    </div>
+                    <div class="option" onclick="selectOption(this)">
+                        <input type="radio" name="q20" value="d"> 
+                        D) The game would have no pure strategy Nash Equilibrium
+                    </div>
+                </div>
+                <div class="explanation" id="explanation-q20">
+                    <div class="explanation-title">Explanation:</div>
+                    <p><span class="correct">Correct Answer: B</span></p>
+                    <p>If the payoff for (D,C) becomes (2ms, 2ms), then when the other player chooses C, your payoff for choosing D (2ms) is worse than choosing C (1ms). This means D is no longer always the best response - it's only better when the other player chooses D.</p>
+                </div>
+            </div>
+            
+            <button type="button" class="submit-btn" onclick="submitQuiz()">Submit Quiz</button>
+        </form>
+        
+        <div class="results" id="results">
+            <div class="score" id="score"></div>
+            <div class="feedback" id="feedback"></div>
+            <button class="restart-btn" onclick="restartQuiz()">Take Quiz Again</button>
+        </div>
+    </div>
+
+    <script>
+        // Store correct answers
+        const correctAnswers = {
+            q1: 'b',
+            q2: 'd',
+            q3: 'd',
+            q4: 'b',
+            q5: 'b',
+            q6: 'b',
+            q7: 'c',
+            q8: 'b',
+            q9: 'b',
+            q10: 'a',
+            q11: 'c',
+            q12: 'b',
+            q13: 'a',
+            q14: 'c',
+            q15: 'a',
+            q16: 'a',
+            q17: 'd',
+            q18: 'b',
+            q19: 'c',
+            q20: 'b'
+        };
+        
+        // Update progress bar and question counter
+        function updateProgress() {
+            const totalQuestions = Object.keys(correctAnswers).length;
+            let answered = 0;
+            
+            for (let i = 1; i <= totalQuestions; i++) {
+                const questionName = 'q' + i;
+                const selectedOption = document.querySelector(`input[name="${questionName}"]:checked`);
+                if (selectedOption) {
+                    answered++;
+                }
+            }
+            
+            const progress = (answered / totalQuestions) * 100;
+            document.getElementById('progress').style.width = progress + '%';
+            document.getElementById('current').textContent = answered;
+        }
+        
+        // Function to select an option
+        function selectOption(element) {
+            // Remove selected class from all options in this question
+            const options = element.parentElement.querySelectorAll('.option');
+            options.forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            // Add selected class to clicked option
+            element.classList.add('selected');
+            
+            // Check the radio button
+            const radio = element.querySelector('input[type="radio"]');
+            radio.checked = true;
+            
+            // Update progress
+            updateProgress();
+        }
+        
+        // Function to submit the quiz
+        function submitQuiz() {
+            let score = 0;
+            const totalQuestions = Object.keys(correctAnswers).length;
+            
+            // Check each question
+            for (let i = 1; i <= totalQuestions; i++) {
+                const questionName = 'q' + i;
+                const selectedOption = document.querySelector(`input[name="${questionName}"]:checked`);
+                
+                if (selectedOption) {
+                    // Show explanation for this question
+                    document.getElementById(`explanation-${questionName}`).classList.add('show');
+                    
+                    // Check if answer is correct
+                    if (selectedOption.value === correctAnswers[questionName]) {
+                        score++;
+                    }
+                }
+            }
+            
+            // Calculate percentage
+            const percentage = Math.round((score / totalQuestions) * 100);
+            
+            // Display results
+            document.getElementById('score').textContent = `Your Score: ${score}/${totalQuestions} (${percentage}%)`;
+            
+            // Provide feedback based on score
+            let feedback = '';
+            if (percentage >= 90) {
+                feedback = 'Outstanding! You have mastered game theory concepts at all difficulty levels.';
+            } else if (percentage >= 75) {
+                feedback = 'Excellent performance! You have a strong understanding of game theory.';
+            } else if (percentage >= 60) {
+                feedback = 'Good work! You understand the main concepts but could benefit from reviewing some details.';
+            } else if (percentage >= 40) {
+                feedback = 'You have a basic understanding but should review the lecture materials.';
+            } else {
+                feedback = 'Consider reviewing the lecture materials and focusing on the fundamental concepts.';
+            }
+            
+            document.getElementById('feedback').textContent = feedback;
+            document.getElementById('results').classList.add('show');
+            
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Function to restart the quiz
+        function restartQuiz() {
+            // Reset all selections
+            const options = document.querySelectorAll('.option');
+            options.forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            const radios = document.querySelectorAll('input[type="radio"]');
+            radios.forEach(radio => {
+                radio.checked = false;
+            });
+            
+            // Hide all explanations
+            const explanations = document.querySelectorAll('.explanation');
+            explanations.forEach(exp => {
+                exp.classList.remove('show');
+            });
+            
+            // Hide results
+            document.getElementById('results').classList.remove('show');
+            
+            // Reset progress bar and counter
+            document.getElementById('progress').style.width = '0%';
+            document.getElementById('current').textContent = '0';
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Initialize progress bar
+        updateProgress();
+    </script>
+</body>
+</html>
